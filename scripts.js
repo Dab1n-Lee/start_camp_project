@@ -3,8 +3,136 @@ if (typeof lucide !== 'undefined' && lucide.createIcons) {
     lucide.createIcons();
 }
 
+function hexToRgba(value, alpha) {
+    const color = value.trim();
+    const hexMatch = color.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hexMatch) {
+        let hex = hexMatch[1];
+        if (hex.length === 3) {
+            hex = hex.split('').map((char) => char + char).join('');
+        }
+        const intValue = Number.parseInt(hex, 16);
+        const r = (intValue >> 16) & 255;
+        const g = (intValue >> 8) & 255;
+        const b = intValue & 255;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (rgbMatch) {
+        return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+    }
+
+    return `rgba(197, 168, 128, ${alpha})`;
+}
+
+function initParticleBackground() {
+    let canvas = document.getElementById('particle-canvas');
+    if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'particle-canvas';
+        canvas.setAttribute('aria-hidden', 'true');
+        document.body.prepend(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let particles = [];
+    let width = 0;
+    let height = 0;
+    let animationFrameId = null;
+
+    function getThemeColors() {
+        const styles = getComputedStyle(document.body);
+        return {
+            accent: styles.getPropertyValue('--color-accent-piano').trim() || '#c5a880',
+            tech: styles.getPropertyValue('--color-accent-tech').trim() || '#818cf8'
+        };
+    }
+
+    function createParticle() {
+        const { accent, tech } = getThemeColors();
+        const color = Math.random() > 0.5 ? accent : tech;
+        return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.14,
+            size: Math.random() * 2.8 + 1.1,
+            alpha: Math.random() * 0.45 + 0.18,
+            drift: Math.random() * 0.01 + 0.003,
+            phase: Math.random() * Math.PI * 2,
+            color
+        };
+    }
+
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const count = Math.min(110, Math.max(60, Math.floor(width / 70)));
+        particles = Array.from({ length: count }, createParticle);
+    }
+
+    function drawParticles() {
+        ctx.clearRect(0, 0, width, height);
+        const time = performance.now() * 0.001;
+
+        particles.forEach((particle, index) => {
+            particle.x += particle.vx;
+            particle.y += particle.vy + Math.sin(time + particle.phase) * particle.drift;
+
+            if (particle.x < -10) particle.x = width + 10;
+            if (particle.x > width + 10) particle.x = -10;
+            if (particle.y < -10) particle.y = height + 10;
+            if (particle.y > height + 10) particle.y = -10;
+
+            const pulse = 0.75 + 0.25 * Math.sin(time * 1.1 + particle.phase);
+            const fillColor = hexToRgba(particle.color, particle.alpha * pulse);
+
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fillStyle = fillColor;
+            ctx.shadowBlur = particle.size * 4;
+            ctx.shadowColor = fillColor;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            if (index % 9 === 0) {
+                const nextParticle = particles[(index + 1) % particles.length];
+                ctx.beginPath();
+                ctx.moveTo(particle.x, particle.y);
+                ctx.lineTo(nextParticle.x, nextParticle.y);
+                ctx.strokeStyle = hexToRgba(particle.color, 0.04);
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+
+        animationFrameId = window.requestAnimationFrame(drawParticles);
+    }
+
+    resizeCanvas();
+    drawParticles();
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('beforeunload', () => {
+        if (animationFrameId) {
+            window.cancelAnimationFrame(animationFrameId);
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-ready');
+    initParticleBackground();
 });
 
 // Highlight the active nav link on each page

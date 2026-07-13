@@ -32,6 +32,8 @@ body {
     overflow-x: hidden;
     scroll-behavior: smooth;
     transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+    isolation: isolate;
 }
 
 body.page-transition {
@@ -194,6 +196,25 @@ body[data-theme='light'] .theme-toggle {
 }
 .nav-link:hover::after {
     width: 100%;
+}
+
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.95;
+}
+
+header,
+main,
+footer,
+.interactive-card,
+.quiz-card {
+    position: relative;
+    z-index: 1;
 }
 
 /* 스크롤바 커스텀 */
