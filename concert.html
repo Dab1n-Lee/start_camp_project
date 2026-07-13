@@ -23,18 +23,28 @@
                 <a href="index.html" data-page="home" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Home</a>
                 <a href="bio.html" data-page="bio" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Bio</a>
                 <a href="concert.html" data-page="concert" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Concert</a>
+                <a href="game.html" data-page="game" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Game</a>
                 <a href="contact.html" data-page="contact" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Contact</a>
             </nav>
 
-            <button class="md:hidden text-zinc-400 hover:text-white" id="menu-toggle">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" class="theme-toggle rounded-full border border-zinc-700 bg-zinc-900/80 px-3 py-2 text-xs text-zinc-300 transition hover:bg-zinc-800" type="button">
+                    <span class="flex items-center gap-2">
+                        <i id="theme-toggle-icon" data-lucide="moon" class="w-4 h-4"></i>
+                        <span id="theme-toggle-label">Dark</span>
+                    </span>
+                </button>
+                <button class="md:hidden text-zinc-400 hover:text-white" id="menu-toggle">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
         </div>
 
         <div class="hidden md:hidden w-full bg-[#121215] border-b border-zinc-900 px-6 py-6 space-y-4" id="mobile-drawer">
             <a href="index.html" data-page="home" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Home</a>
             <a href="bio.html" data-page="bio" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Bio</a>
             <a href="concert.html" data-page="concert" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Concert</a>
+            <a href="game.html" data-page="game" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Game</a>
             <a href="contact.html" data-page="contact" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Contact</a>
         </div>
     </header>

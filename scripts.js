@@ -25,6 +25,42 @@ function setActiveNav() {
 
 setActiveNav();
 
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+const themeToggleIcon = document.getElementById('theme-toggle-icon');
+const themeToggleLabel = document.getElementById('theme-toggle-label');
+
+function applyTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    if (themeToggleLabel) {
+        themeToggleLabel.textContent = theme === 'light' ? 'Light' : 'Dark';
+    }
+    if (themeToggleIcon) {
+        themeToggleIcon.setAttribute('data-lucide', theme === 'light' ? 'sun' : 'moon');
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+    }
+    if (themeToggle) {
+        themeToggle.setAttribute('aria-label', theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+    }
+    localStorage.setItem('theme', theme);
+}
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light' || savedTheme === 'dark') {
+    applyTheme(savedTheme);
+} else {
+    applyTheme('dark');
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const nextTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        applyTheme(nextTheme);
+    });
+}
+
 // Hamburger Menu Drawer for mobile
 const menuToggle = document.getElementById('menu-toggle');
 const mobileDrawer = document.getElementById('mobile-drawer');
