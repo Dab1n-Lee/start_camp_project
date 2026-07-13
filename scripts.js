@@ -1,60 +1,25 @@
 // Initialize Lucide Icons
-// Safe initialization for various pages
 if (typeof lucide !== 'undefined' && lucide.createIcons) {
     lucide.createIcons();
 }
 
-// (Removed file:// warning banner — developer prefers no banner while developing locally)
-
-// --- Simple SPA Router (hash-based) ---
-const SPA_ROUTES = ['home','bio','concert','contact'];
-function showRoute(route) {
-    if (!route || SPA_ROUTES.indexOf(route) === -1) route = 'home';
-    document.querySelectorAll('[data-route-section]').forEach(sec => {
-        sec.classList.add('hidden');
-    });
-    const target = document.getElementById(route);
-    if (target) target.classList.remove('hidden');
-    // update nav active styles
-    document.querySelectorAll('[data-route]').forEach(a => {
-        if (a.dataset.route === route) {
-            a.classList.remove('text-zinc-400');
-            a.classList.add('text-zinc-100');
+// Highlight the active nav link on each page
+function setActiveNav() {
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('[data-page]').forEach(link => {
+        const href = link.getAttribute('href') || '';
+        const isActive = href === currentPath || (currentPath === 'index.html' && href === 'index.html');
+        if (isActive) {
+            link.classList.remove('text-zinc-400');
+            link.classList.add('text-zinc-100');
         } else {
-            a.classList.remove('text-zinc-100');
-            a.classList.add('text-zinc-400');
+            link.classList.remove('text-zinc-100');
+            link.classList.add('text-zinc-400');
         }
     });
-    // close mobile drawer if open
-    const md = document.getElementById('mobile-drawer');
-    if (md && !md.classList.contains('hidden')) md.classList.add('hidden');
-    window.scrollTo(0,0);
 }
 
-function navigateTo(route, addHistory = true) {
-    if (addHistory) history.pushState({route}, '', '#'+route);
-    showRoute(route);
-}
-
-// attach to all links with data-route
-document.addEventListener('click', (e) => {
-    const a = e.target.closest && e.target.closest('[data-route]');
-    if (!a) return;
-    e.preventDefault();
-    const r = a.dataset.route;
-    navigateTo(r);
-});
-
-window.addEventListener('popstate', (e) => {
-    const r = (e.state && e.state.route) || location.hash.replace('#','') || 'home';
-    showRoute(r);
-});
-
-// initial route
-document.addEventListener('DOMContentLoaded', () => {
-    const initial = location.hash.replace('#','') || 'home';
-    showRoute(initial);
-});
+setActiveNav();
 
 // Hamburger Menu Drawer for mobile
 const menuToggle = document.getElementById('menu-toggle');
