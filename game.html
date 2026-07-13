@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game | Pianist & Software Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-transition grid-bg min-h-screen flex flex-col justify-between">
+    <header class="fixed top-0 left-0 w-full z-40 backdrop-blur-md bg-opacity-75 border-b border-zinc-900" style="background-color: rgba(11, 11, 13, 0.8);">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-2 tracking-widest text-sm font-semibold text-zinc-100">
+                <span class="text-[var(--color-accent-piano)]">🎹</span>
+                <span class="font-light">pyanist</span>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-10">
+                <a href="index.html" data-page="home" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Home</a>
+                <a href="bio.html" data-page="bio" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Bio</a>
+                <a href="concert.html" data-page="concert" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Concert</a>
+                <a href="game.html" data-page="game" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Game</a>
+                <a href="contact.html" data-page="contact" class="nav-link text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Contact</a>
+            </nav>
+
+            <button class="md:hidden text-zinc-400 hover:text-white" id="menu-toggle">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="hidden md:hidden w-full bg-[#121215] border-b border-zinc-900 px-6 py-6 space-y-4" id="mobile-drawer">
+            <a href="index.html" data-page="home" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Home</a>
+            <a href="bio.html" data-page="bio" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Bio</a>
+            <a href="concert.html" data-page="concert" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Concert</a>
+            <a href="game.html" data-page="game" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Game</a>
+            <a href="contact.html" data-page="contact" class="mobile-link block text-xs tracking-widest text-zinc-400 hover:text-zinc-200 uppercase">Contact</a>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-24 px-6 py-20">
+        <section class="max-w-4xl mx-auto">
+            <div class="text-center mb-10 space-y-3">
+                <span class="text-[10px] tracking-[0.3em] text-[var(--color-accent-piano)] uppercase font-semibold">Gamification</span>
+                <h1 class="text-3xl md:text-4xl font-light text-zinc-100 tracking-tight">포인트 퀴즈</h1>
+                <p class="text-zinc-400 text-sm md:text-base leading-relaxed">이 사이트의 정보를 바탕으로 5문제를 맞춰보세요. 정답이면 포인트가 쌓입니다.</p>
+            </div>
+
+            <div class="rounded-xl border border-zinc-850 bg-zinc-900/40 p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="inline-flex items-center rounded-full border border-zinc-800 bg-zinc-950/80 px-3 py-2 text-sm text-zinc-200">
+                        포인트: <span id="points-display" class="ml-2 font-semibold text-[var(--color-accent-piano)]">0P</span>
+                    </div>
+                    <div id="quiz-status" class="text-sm text-zinc-400">5문제를 모두 맞혀보세요.</div>
+                </div>
+
+                <div class="mt-8 border-b border-zinc-800 pb-6">
+                    <h3 class="text-sm font-semibold text-zinc-100">교환 상품</h3>
+                    <div class="mt-4 grid gap-3 md:grid-cols-3">
+                        <div class="product-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                            <img src="images/product1.jpg" alt="Product 1" class="h-36 w-full rounded-lg object-cover">
+                            <div class="mt-3 text-[10px] uppercase tracking-[0.3em] text-zinc-500">Product 1</div>
+                            <div class="mt-2 text-lg font-semibold text-zinc-100">500,000P</div>
+                            <button type="button" class="redeem-btn mt-4 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 disabled:cursor-not-allowed disabled:opacity-50" disabled>교환하기</button>
+                        </div>
+                        <div class="product-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                            <img src="images/product2.jpg" alt="Product 2" class="h-36 w-full rounded-lg object-cover">
+                            <div class="mt-3 text-[10px] uppercase tracking-[0.3em] text-zinc-500">Product 2</div>
+                            <div class="mt-2 text-lg font-semibold text-zinc-100">1,000,000P</div>
+                            <button type="button" class="redeem-btn mt-4 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 disabled:cursor-not-allowed disabled:opacity-50" disabled>교환하기</button>
+                        </div>
+                        <div class="product-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+                            <img src="images/product3.jpg" alt="Product 3" class="h-36 w-full rounded-lg object-cover">
+                            <div class="mt-3 text-[10px] uppercase tracking-[0.3em] text-zinc-500">Product 3</div>
+                            <div class="mt-2 text-lg font-semibold text-zinc-100">250,000P</div>
+                            <button type="button" class="redeem-btn mt-4 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 disabled:cursor-not-allowed disabled:opacity-50" disabled>교환하기</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <div class="mb-4 flex items-center justify-between text-sm text-zinc-400">
+                        <span>문제 진행</span>
+                        <span id="quiz-progress">1 / 5</span>
+                    </div>
+                    <div id="quiz-questions" class="space-y-5">
+                        <div class="quiz-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 is-active" data-question-index="0" data-correct-answer="피아노와 개발을 함께 사랑하는 사람">
+                            <p class="text-sm font-medium text-zinc-100">Q1. 이 사이트의 주인공은 어떤 사람인가요?</p>
+                            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q1" value="피아노와 개발 전부 다 하려는 폐인" data-correct="true"> 피아노와 개발 전부 다 하려는 폐인</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q1" value="대통령"> 대통령</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q1" value="체인쏘맨"> 체인쏘맨</label>
+                            </div>
+                            <div class="answer-feedback mt-3 text-sm"></div>
+                        </div>
+
+                        <div class="quiz-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 hidden" data-question-index="1" data-correct-answer="Home / Bio / Concert / Contact">
+                            <p class="text-sm font-medium text-zinc-100">Q2. 이 포트폴리오의 핵심 섹션으로 맞는 것은 무엇일까요?</p>
+                            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q2" value="Home / Bio / Concert / Contact" data-correct="true"> Home / Bio / Concert / Contact</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q2" value="Shop / Blog / News"> Shop / Blog / News</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q2" value="Gallery / Recipe / Weather"> Gallery / Recipe / Weather</label>
+                            </div>
+                            <div class="answer-feedback mt-3 text-sm"></div>
+                        </div>
+
+                        <div class="quiz-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 hidden" data-question-index="2" data-correct-answer="Concert">
+                            <p class="text-sm font-medium text-zinc-100">Q3. 연주 영상을 모아두는 페이지의 이름은 무엇일까요?</p>
+                            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q3" value="Concert" data-correct="true"> Concert</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q3" value="Product"> Product</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q3" value="Travel"> Travel</label>
+                            </div>
+                            <div class="answer-feedback mt-3 text-sm"></div>
+                        </div>
+
+                        <div class="quiz-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 hidden" data-question-index="3" data-correct-answer="Email">
+                            <p class="text-sm font-medium text-zinc-100">Q4. 문의 페이지에서 가장 먼저 떠오르는 연락 수단은 무엇일까요?</p>
+                            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q4" value="Email" data-correct="true"> Email</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q4" value="Phone"> Phone</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q4" value="Address"> Address</label>
+                            </div>
+                            <div class="answer-feedback mt-3 text-sm"></div>
+                        </div>
+
+                        <div class="quiz-card rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 hidden" data-question-index="4" data-correct-answer="Minimal & Dark">
+                            <p class="text-sm font-medium text-zinc-100">Q5. 이 사이트의 분위기를 가장 잘 설명하는 표현은 무엇일까요?</p>
+                            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q5" value="Minimal & Dark" data-correct="true"> Minimal & Dark</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q5" value="Bright & Loud"> Bright & Loud</label>
+                                <label class="flex items-center gap-2 rounded border border-zinc-800 px-3 py-2"><input type="radio" name="q5" value="Cartoon & Cute"> Cartoon & Cute</label>
+                            </div>
+                            <div class="answer-feedback mt-3 text-sm"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+                        <button id="prev-question" type="button" class="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50">이전</button>
+                        <div class="flex flex-wrap gap-3">
+                            <button id="submit-quiz" type="button" class="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-semibold text-black transition hover:bg-white">정답 확인</button>
+                            <button id="reset-quiz" type="button" class="hidden rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900">다시 풀기</button>
+                        </div>
+                        <button id="next-question" type="button" class="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900">다음</button>
+                    </div>
+
+                    <div id="quiz-summary" class="mt-4 hidden rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300"></div>
+                    <div id="quiz-feedback" class="mt-3 text-sm text-zinc-400">문제를 선택한 뒤 정답 확인 버튼을 눌러 주세요.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black py-8 border-t border-zinc-950 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <span class="text-[10px] text-zinc-600 tracking-wider">&copy; 2026 Pianist & Software Engineer Portfolio.</span>
+        </div>
+    </footer>
+
+    <div id="game-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="bg-[#121215] border border-zinc-850 rounded-xl max-w-sm w-full p-6 text-center space-y-4">
+            <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-medium text-zinc-100">ㄴㄴ</h3>
+            <p id="game-modal-message" class="text-xs text-zinc-500 leading-relaxed">상품 교환은 아직 잠겨 있어요.</p>
+            <button onclick="closeGameModal()" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs tracking-wider rounded transition-all">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

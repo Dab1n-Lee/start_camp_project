@@ -178,3 +178,260 @@ function closeNotifModal() {
         notifModal.classList.add('hidden');
     }, 300);
 }
+
+// Gamification quiz and locked rewards
+const quizQuestions = document.getElementById('quiz-questions');
+const submitQuizButton = document.getElementById('submit-quiz');
+const resetQuizButton = document.getElementById('reset-quiz');
+const prevQuestionButton = document.getElementById('prev-question');
+const nextQuestionButton = document.getElementById('next-question');
+const quizSummary = document.getElementById('quiz-summary');
+const quizStatus = document.getElementById('quiz-status');
+const quizFeedback = document.getElementById('quiz-feedback');
+const pointsDisplay = document.getElementById('points-display');
+const quizProgress = document.getElementById('quiz-progress');
+const gameModal = document.getElementById('game-modal');
+const gameModalMessage = document.getElementById('game-modal-message');
+let quizPoints = 0;
+let quizAnswers = [];
+let quizSelections = [];
+let quizCompleted = false;
+let currentQuestionIndex = 0;
+
+function updatePoints() {
+    if (pointsDisplay) {
+        pointsDisplay.textContent = `${quizPoints}P`;
+    }
+}
+
+function clearCardFeedback(card) {
+    const feedback = card.querySelector('.answer-feedback');
+    if (feedback) {
+        feedback.textContent = '';
+        feedback.className = 'answer-feedback mt-3 text-sm';
+    }
+    card.classList.remove('quiz-correct', 'quiz-wrong');
+}
+
+function updateQuizProgress() {
+    const quizCards = Array.from(document.querySelectorAll('.quiz-card'));
+    quizCards.forEach((card, index) => {
+        card.classList.toggle('is-active', index === currentQuestionIndex);
+        card.classList.toggle('hidden', index !== currentQuestionIndex);
+    });
+
+    if (quizProgress) {
+        const visibleIndex = Math.min(currentQuestionIndex + 1, quizCards.length);
+        quizProgress.textContent = `${visibleIndex} / ${quizCards.length}`;
+    }
+
+    if (prevQuestionButton) {
+        prevQuestionButton.disabled = currentQuestionIndex === 0;
+        prevQuestionButton.classList.toggle('opacity-50', currentQuestionIndex === 0);
+        prevQuestionButton.classList.toggle('cursor-not-allowed', currentQuestionIndex === 0);
+    }
+
+    if (nextQuestionButton) {
+        const isLast = currentQuestionIndex >= quizCards.length - 1;
+        nextQuestionButton.disabled = isLast;
+        nextQuestionButton.classList.toggle('opacity-50', isLast);
+        nextQuestionButton.classList.toggle('cursor-not-allowed', isLast);
+    }
+
+    if (submitQuizButton) {
+        submitQuizButton.disabled = false;
+        submitQuizButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+function resetQuizState() {
+    quizPoints = 0;
+    quizAnswers = [];
+    quizSelections = [];
+    quizCompleted = false;
+    currentQuestionIndex = 0;
+    updatePoints();
+
+    document.querySelectorAll('.quiz-card').forEach((card) => {
+        clearCardFeedback(card);
+    });
+
+    document.querySelectorAll('#quiz-questions input[type="radio"]').forEach((input) => {
+        input.checked = false;
+        input.disabled = false;
+    });
+
+    if (quizSummary) {
+        quizSummary.classList.add('hidden');
+        quizSummary.textContent = '';
+    }
+    if (quizStatus) {
+        quizStatus.textContent = '5문제를 모두 맞혀보세요.';
+    }
+    if (quizFeedback) {
+        quizFeedback.textContent = '문제를 선택한 뒤 정답 확인 버튼을 눌러 주세요.';
+    }
+    if (submitQuizButton) {
+        submitQuizButton.disabled = false;
+        submitQuizButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+    if (resetQuizButton) {
+        resetQuizButton.classList.add('hidden');
+    }
+    updateQuizProgress();
+}
+
+if (quizQuestions) {
+    quizQuestions.addEventListener('change', (event) => {
+        const selectedInput = event.target.closest('input[type="radio"]');
+        if (!selectedInput) return;
+
+        const card = selectedInput.closest('.quiz-card');
+        if (!card) return;
+
+        const questionIndex = Number(card.dataset.questionIndex);
+        const selectedValue = selectedInput.value;
+
+        if (quizAnswers[questionIndex] === 'correct' || quizAnswers[questionIndex] === 'wrong') {
+            if (quizFeedback) {
+                quizFeedback.textContent = '이미 판정한 문제입니다.';
+            }
+            return;
+        }
+
+        quizSelections[questionIndex] = selectedValue;
+        clearCardFeedback(card);
+
+        if (quizFeedback) {
+            quizFeedback.textContent = '선택한 답을 확인 버튼으로 판정해 주세요.';
+        }
+    });
+}
+
+if (prevQuestionButton) {
+    prevQuestionButton.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex -= 1;
+            updateQuizProgress();
+        }
+    });
+}
+
+if (nextQuestionButton) {
+    nextQuestionButton.addEventListener('click', () => {
+        const quizCards = Array.from(document.querySelectorAll('.quiz-card'));
+        if (currentQuestionIndex < quizCards.length - 1) {
+            currentQuestionIndex += 1;
+            updateQuizProgress();
+        }
+    });
+}
+
+if (submitQuizButton) {
+    submitQuizButton.addEventListener('click', () => {
+        const activeCard = document.querySelector('.quiz-card.is-active');
+        if (!activeCard) return;
+
+        const questionIndex = Number(activeCard.dataset.questionIndex);
+        const selectedValue = quizSelections[questionIndex];
+
+        if (selectedValue === undefined) {
+            if (quizStatus) {
+                quizStatus.textContent = '현재 문제를 선택해 주세요.';
+            }
+            if (quizFeedback) {
+                quizFeedback.textContent = '현재 보이는 문제의 선택지를 먼저 골라주세요.';
+            }
+            return;
+        }
+
+        const correctAnswer = activeCard.dataset.correctAnswer;
+        const feedback = activeCard.querySelector('.answer-feedback');
+        const alreadyAnswered = quizAnswers[questionIndex] === 'correct' || quizAnswers[questionIndex] === 'wrong';
+
+        if (alreadyAnswered) {
+            if (quizFeedback) {
+                quizFeedback.textContent = '이미 판정한 문제입니다. 다음 문제로 넘어가세요.';
+            }
+            return;
+        }
+
+        const selectedInput = activeCard.querySelector(`input[type="radio"][value="${CSS.escape(selectedValue)}"]`);
+        const isCorrectAnswer = selectedInput?.dataset.correct === 'true' || selectedValue === correctAnswer;
+
+        if (isCorrectAnswer) {
+            quizAnswers[questionIndex] = 'correct';
+            quizPoints += 100;
+            updatePoints();
+            activeCard.classList.add('quiz-correct');
+            activeCard.classList.remove('quiz-wrong');
+            if (feedback) {
+                feedback.textContent = '정답!';
+                feedback.className = 'answer-feedback feedback-correct mt-3 text-sm';
+            }
+        } else {
+            quizAnswers[questionIndex] = 'wrong';
+            activeCard.classList.add('quiz-wrong');
+            activeCard.classList.remove('quiz-correct');
+            if (feedback) {
+                feedback.textContent = '오답입니다.';
+                feedback.className = 'answer-feedback feedback-wrong mt-3 text-sm';
+            }
+        }
+
+        const correctCount = quizAnswers.filter((answer) => answer === 'correct').length;
+        if (quizSummary) {
+            quizSummary.textContent = `현재까지 ${correctCount}문제를 맞혔어요! 포인트는 ${quizPoints}P 입니다.`;
+            quizSummary.classList.remove('hidden');
+        }
+        if (quizStatus) {
+            quizStatus.textContent = '이 문제는 판정됐습니다.';
+        }
+        if (quizFeedback) {
+            quizFeedback.textContent = '다음 문제로 넘어가서 계속 풀어보세요.';
+        }
+        if (resetQuizButton) {
+            resetQuizButton.classList.remove('hidden');
+        }
+        if (submitQuizButton) {
+            submitQuizButton.disabled = false;
+            submitQuizButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+        activeCard.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.disabled = true;
+        });
+    });
+}
+
+if (resetQuizButton) {
+    resetQuizButton.addEventListener('click', resetQuizState);
+}
+
+document.querySelectorAll('.redeem-btn').forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        showGameModal('ㄴㄴ');
+    });
+});
+
+function showGameModal(message) {
+    if (!gameModal) return;
+    if (gameModalMessage) {
+        gameModalMessage.textContent = message;
+    }
+    gameModal.classList.remove('hidden');
+    setTimeout(() => {
+        gameModal.classList.add('opacity-100');
+    }, 10);
+}
+
+function closeGameModal() {
+    if (!gameModal) return;
+    gameModal.classList.remove('opacity-100');
+    setTimeout(() => {
+        gameModal.classList.add('hidden');
+    }, 300);
+}
+
+resetQuizState();
