@@ -3,6 +3,10 @@ if (typeof lucide !== 'undefined' && lucide.createIcons) {
     lucide.createIcons();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('is-ready');
+});
+
 // Highlight the active nav link on each page
 function setActiveNav() {
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
